@@ -1,0 +1,55 @@
+<?php
+
+$c = $_REQUEST['c'] ?? '';
+$c = cleanString($c);
+
+// unique code for js loading
+$v = rand(10, 99999);
+
+logIt(json_encode($_REQUEST));
+
+if (empty($c)) {
+  outputPage($v);
+} else {
+  $club = getClub($c);
+  outputJson($club);
+}
+
+function getClub($c) {
+    return json_decode(file_get_contents("_${c}.json"));
+}
+
+function logIt($str) {
+  $dateTime = date('Ymd H:i:s');
+  file_put_contents('_log.txt', "{$dateTime},{$_SERVER['REMOTE_ADDR']},{$str}\n", FILE_APPEND | LOCK_EX);
+}
+
+function cleanString($str) {
+  $str = preg_replace('/[^a-z0-9]/i', '', $str);
+
+  return substr($str, 0, 15);
+}
+
+function outputJson($data) {
+    header('Content-Type: application/json');
+    echo json_encode($data);
+}
+
+function outputPage($v) {
+    print "<!DOCTYPE html>
+    <html dir='ltr' lang='en'>
+    <head>
+        <title>Bookclub</title>
+        <meta charset='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, interactive-widget=resizes-visual' />
+        <link rel='stylesheet' href='bookclub.css?{$v}' />
+        <script src='bookclub.js?{$v}' ></script>
+    </head>
+    <body>
+    <h1 class='title'>Bookclub</h1>
+        <div class='content'></div>
+    </body>
+    </html>";
+}
+
+
