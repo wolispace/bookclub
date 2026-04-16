@@ -2,6 +2,9 @@
 let clubId = window.location.href;
 clubId = clubId.replace(window.location.origin, '').replace('/', '');
 
+let clubDate;
+
+
 function addToSchedule(html) {
   let bodyElement = document.querySelector(".schedule");
   bodyElement.innerHTML = html;
@@ -32,11 +35,16 @@ function buildSchedule(clubData) {
           <div class="book">${showbook}</div>
           <div class="location">${clubData.locations[location]}</div>
         </div>
-        <div class="edit"><i class="fas fa-edit"></i></div>
+        <div class="edit" onclick="editEvent('${key}')"><i class="fas fa-edit"></i></div>
       </div>`;
   });
 
   return html;
+}
+
+function editEvent(key) {
+  const html = editForm(key);
+    
 }
 
 // The show starts here

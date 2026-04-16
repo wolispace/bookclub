@@ -51,8 +51,9 @@ body {
 .book {
     font-size: 130%;
     font-weight: bold;
-        color: var(--font-color-bold);
-        padding-bottom: 0.5rem;
+    color: var(--font-color-bold);
+    padding-bottom: 0.5rem;
+    padding-top: 1rem;
 }
 
 .edit {
