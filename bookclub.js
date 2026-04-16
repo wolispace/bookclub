@@ -2,7 +2,7 @@
 let clubId = window.location.href;
 clubId = clubId.replace(window.location.origin, '').replace('/', '');
 
-let clubDate;
+let clubData = null;
 
 
 function addToSchedule(html) {
@@ -42,17 +42,41 @@ function buildSchedule(clubData) {
   return html;
 }
 
-function editEvent(key) {
-  const html = editForm(key);
-    
+function showDialog(html) {
+  const dialog = document.querySelector('.dialog');
+  dialog.innerHTML = `<div class="dialog-close" onclick="closeDialog()">✕</div>${html}`;
+  dialog.classList.add('visible');
 }
 
-// The show starts here
-document.addEventListener('DOMContentLoaded', () => {
-  getClubData(clubId).then(response => response.json()).then(data => {
-    addToTitle(data.name);
-    const schedule = buildSchedule(data);
-    addToSchedule(schedule);
-  });
+function closeDialog() {
+  document.querySelector('.dialog').classList.remove('visible');
+}
 
+function editEvent(key) {
+  showDialog(editForm(key));
+}
+
+function editForm(key) {
+  const event = clubData.events[key];
+  console.log(event);
+  let html = ``;
+  html += inputField('book', event.book, 'book', 'book');
+  return html;
+}
+
+function inputField(key, value, label, placeholder) {
+  return `<div class="row">
+    <label>${label}</label>
+    <input type="text" name="${key}" value="${value}" placeholder="${placeholder}"></input>
+  </div>
+  `;
+}
+
+
+// The show starts here
+document.addEventListener('DOMContentLoaded', async () => {
+  const res = await getClubData(clubId);
+  clubData = await res.json();
+  addToTitle(clubData.name);
+  addToSchedule(buildSchedule(clubData));
 });

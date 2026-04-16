@@ -57,8 +57,37 @@ body {
 }
 
 .edit {
-     position: absolute;
+    position: absolute;
     top: 0.5rem;
     right: 0.5rem;
+    cursor: pointer;
+}
+
+.dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 80%;
+
+    background-color: rgb(82, 65, 65);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 1rem;
+    z-index: 1;
+    max-width: 500px;
+}
+
+.dialog.visible {
+    display: block;
+}
+
+.dialog-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    cursor: pointer;
+    font-size: 120%;
 }
 

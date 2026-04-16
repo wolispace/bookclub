@@ -50,7 +50,8 @@ function outputPage($v) {
     </head>
     <body>
     <h1 class='title'>Bookclub</h1>
-        <div class='schedule as-column'></div>
+    <div class='schedule as-column'></div>
+    <div class='dialog'></div>
     </body>
     </html>";
 }
