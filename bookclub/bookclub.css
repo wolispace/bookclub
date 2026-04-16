@@ -10,17 +10,12 @@ body {
     font-family: Tahoma, Verdana, Geneva, sans-serif;
 }
 
-.as-column {
+
+
+.schedule {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-}
-
-.as-row {
-    display: flex;
-}
-
-.schedule {
     gap: 1rem;    
 }
 
@@ -28,6 +23,7 @@ body {
     background-color: rgba(0,0,0,0.25);
     padding: 1rem;
     border-radius: 1rem;
+    display: flex;
     gap: 0.5rem;
     position: relative;
 }
@@ -35,12 +31,19 @@ body {
 .datebox {
     background-color: rgba(255,255,255,0.15);
     padding: 0.5rem;
-    border-radius: 0.5rem;  
+    border-radius: 0.5rem;
+        display: flex;
+    flex-direction: column;
+    justify-content: space-between;  
 }
 
-.date {
+.month {
     font-size: 200%;
     color: var(--font-color-bold);
+}
+
+.monthday {
+    font-size: 100%;
 }
 
 .host {
@@ -48,12 +51,23 @@ body {
     color: var(--font-color-bold);
 }
 
-.book {
+.bookbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title {
     font-size: 130%;
     font-weight: bold;
     color: var(--font-color-bold);
     padding-bottom: 0.5rem;
     padding-top: 1rem;
+}
+
+.by {
+    color: var(--font-color-bold);
+
 }
 
 .edit {
