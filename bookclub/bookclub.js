@@ -1,6 +1,6 @@
 
 let clubId = window.location.href;
-clubId = clubId.replace(window.location.origin, '').replace('/', '');
+clubId = clubId.replace(window.location.origin, '').replace('/bookclub/', '');
 
 let clubData = null;
 
