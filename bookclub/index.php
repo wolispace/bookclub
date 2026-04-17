@@ -13,7 +13,7 @@ if (empty($c)) {
   outputPage($v);
 } else {
   $club = getClub($c);
-  if ($data) {
+  if (!empty($data)) {
     $club = saveClub($c, $club, $data);
   }
   outputJson($club);
@@ -24,13 +24,18 @@ function getClub($c) {
 }
 
 function saveClub($c, $club, $data) {
-    $newData = json_decode($$data);
+    $newData = json_decode($data);
     foreach ($newData as $key => $value) {
         logIt("Setting {$key} to {$value}");
+        if ($key == 'clubname') {
+            $club->name = $value;
+        }
         //$club->$key = $value;
     }
 
-    file_put_contents("_${c}.json", json_encode($club));
+    file_put_contents("_${c}.json", json_encode($club, JSON_PRETTY_PRINT));
+
+    return $club;
 }
 
 function logIt($str) {
