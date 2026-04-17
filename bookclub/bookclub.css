@@ -10,6 +10,17 @@ body {
     font-family: Tahoma, Verdana, Geneva, sans-serif;
 }
 
+.clubtitle {
+  padding: 0;
+  font-size: 130%;
+}
+
+.editclub {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    cursor: pointer;
+}
 
 
 .schedule {
@@ -60,8 +71,7 @@ body {
     font-size: 130%;
     font-weight: bold;
     color: var(--font-color-bold);
-    padding-bottom: 0.5rem;
-    padding-top: 1rem;
+    padding-top: 0.35rem;
 }
 
 .by {
@@ -74,6 +84,14 @@ body {
     top: 0.5rem;
     right: 0.5rem;
     cursor: pointer;
+}
+
+.fas {
+    text-shadow: .0 0 .5rem black;
+}
+
+.fas:hover {
+  color: white;
 }
 
 .dialog {
@@ -104,6 +122,30 @@ body {
     font-size: 120%;
 }
 
+.dialogbuttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.button {
+    background-color: rgb(78, 95, 128);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    border-top: 3px solid rgb(255, 255, 255, .25);
+    border-right: 3px solid rgb(0, 0, 0, .45);
+    border-bottom: 3px solid rgb(0, 0, 0, .45);
+    border-left: 3px solid rgb(255, 255, 255, .25);
+    font-size: 110%;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(119, 142, 189);
+}
+
 .editform {
     display: flex;
     flex-direction: column;
@@ -119,6 +161,17 @@ input, select{
     border-radius: 0.25rem;
     width: 95%;
     font-size: 110%;
+}
+select{
+     width: 99%;
+}
+
+a {
+    color: cornflowerblue;
+    text-decoration: none;
+}
+a:hover {
+    color: white;
 }
 
 hr {

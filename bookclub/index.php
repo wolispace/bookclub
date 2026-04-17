@@ -1,22 +1,36 @@
 <?php
 
 $c = $_REQUEST['c'] ?? '';
+$data = $_REQUEST['d'] ?? '';
 $c = cleanString($c);
 
 // unique code for js loading
 $v = rand(10, 99999);
 
-logIt(json_encode([$_REQUEST,$c]));
+logIt(json_encode([$_REQUEST, $c]));
 
 if (empty($c)) {
   outputPage($v);
 } else {
   $club = getClub($c);
+  if ($data) {
+    $club = saveClub($c, $club, $data);
+  }
   outputJson($club);
 }
 
 function getClub($c) {
     return json_decode(file_get_contents("_${c}.json"));
+}
+
+function saveClub($c, $club, $data) {
+    $newData = json_decode($$data);
+    foreach ($newData as $key => $value) {
+        logIt("Setting {$key} to {$value}");
+        //$club->$key = $value;
+    }
+
+    file_put_contents("_${c}.json", json_encode($club));
 }
 
 function logIt($str) {
@@ -49,7 +63,7 @@ function outputPage($v) {
         <script src='bookclub.js?{$v}' ></script>
     </head>
     <body>
-    <h1 class='title'>Bookclub</h1>
+    <h1 class='clubtitle'>Bookclub</h1>
     <div class='schedule'></div>
     <div class='dialog'></div>
     </body>
