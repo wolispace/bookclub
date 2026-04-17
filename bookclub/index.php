@@ -6,7 +6,7 @@ $c = cleanString($c);
 // unique code for js loading
 $v = rand(10, 99999);
 
-logIt(json_encode($_REQUEST));
+logIt(json_encode([$_REQUEST,$c]));
 
 if (empty($c)) {
   outputPage($v);

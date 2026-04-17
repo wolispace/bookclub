@@ -21,7 +21,6 @@ body {
 
 .event {
     background-color: rgba(0,0,0,0.25);
-    padding: 1rem;
     border-radius: 1rem;
     display: flex;
     gap: 0.5rem;
@@ -32,7 +31,7 @@ body {
     background-color: rgba(255,255,255,0.15);
     padding: 0.5rem;
     border-radius: 0.5rem;
-        display: flex;
+    display: flex;
     flex-direction: column;
     justify-content: space-between;  
 }
@@ -79,14 +78,14 @@ body {
 
 .dialog {
     display: none;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 80%;
-    height: 80%;
 
     background-color: rgb(82, 65, 65);
     border-radius: 1rem;
+    box-shadow: 1rem 1rem 2rem rgba(0,0,0,0.5);
     padding: 1rem;
     margin: 1rem;
     z-index: 1;
@@ -105,3 +104,25 @@ body {
     font-size: 120%;
 }
 
+.editform {
+    display: flex;
+    flex-direction: column;
+}
+.label {
+    color: white;
+}
+
+input, select{
+    background-color: rgb(251, 245, 161);
+    color: rgb(0, 0, 0, .85);
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    width: 95%;
+    font-size: 110%;
+}
+
+hr {
+    border-top: 1px solid rgba(255,255,255,0.35);
+    width:80%;
+    margin-top:1rem;
+}

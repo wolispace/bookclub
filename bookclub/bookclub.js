@@ -35,7 +35,7 @@ function buildBooks(books) {
 function buildSchedule(clubData) {
   let html = '';
   Object.entries(clubData.events).forEach(([key, event]) => {
-      const date = new Date(key.slice(0,4), key.slice(4,6) - 1, key.slice(6,8));
+      const date = keyToDate(key);
       const month = date.toLocaleString('default', { month: 'short' }); // "Apr"
       const weekday = date.toLocaleString('default', { weekday: 'short' }); // "Wed"
       const monthday = date.getDate(); // 15 // "December", "September"
@@ -76,19 +76,78 @@ function editEvent(key) {
 }
 
 function editForm(key) {
+  console.log({clubData});
   const event = clubData.events[key];
-  console.log(event);
-  let html = ``;
-  html += inputField('book', event.book, 'book', 'book');
+  const date = keyToDate(key);
+  const editDate = date.toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' }); // "01 Feb 2026"
+  const hostsSelect = makeHostSources();
+  let html = `<div class="editform">`;
+  html += makeInputRow('Date', inputField('date', editDate, 'date'));
+  html += makeInputRow('Host', selectList(makeHostSources(), event.host, 'host'));
+  html += makeInputRow('Location', selectList(makeLocationSources(), event.location, 'location'));
+  
+  html += makeBookRows(event.books);
+  html += '</div>';
   return html;
 }
 
-function inputField(key, value, label, placeholder) {
+function keyToDate(key) {
+  return new Date(key.slice(0,4), key.slice(4,6) - 1, key.slice(6,8));
+} 
+
+function makeInputRow(label, html) {
   return `<div class="row">
-    <label>${label}</label>
-    <input type="text" name="${key}" value="${value}" placeholder="${placeholder}"></input>
+    <div class="label">${label}</div>
+    ${html}
   </div>
   `;
+
+}
+
+function inputField(key, value, placeholder) {
+  return `<input type="text" name="${key}" value="${value}" placeholder="${placeholder}"></input>`;
+}
+
+/**
+ * Takes clubData.members of [{name: "Clare"} ...]
+ * @returns array of [{key: 1, value: "Clare"} ...]
+ */
+function makeHostSources() {
+  return clubData.members.map((item) => ({ key: item.name, value: item.name }));
+}
+function makeLocationSources() {
+  return clubData.locations.map((item, i) => ({ key: i, value: item }));
+}
+
+function makeBookRows(books) {
+  let html = '';
+  console.log(books);
+  for(const [index, book] of books.entries()) {
+    html += makeBookRow(book, index);
+  }
+  html += `<div class="addbook" onclick="addBook()">+ Add another book</div>`;
+  return html;
+}
+
+function makeBookRow(book, index) {
+  let html = '';
+    html += makeInputRow('Title', inputField(`title-${index}`, book.title, 'Book title'));
+    html += makeInputRow('By', inputField(`by-${index}`, book.by, 'Author'));
+    html += makeInputRow('Url', inputField(`url-${index}`, book.url, 'Web link'));
+    html += `<hr>`;
+  return html;
+
+}
+
+function selectList(sources, selected, name) {
+  let html = `<select name="${name}"><option></option>`;
+  for( const source of sources) {
+    const isSelected = source.key === selected ? 'selected' : '';
+    html += `<option value="${source.value}" ${isSelected}>${source.value}</option>`;
+  }
+  html += `</select>`;
+
+  return html;
 }
 
 
