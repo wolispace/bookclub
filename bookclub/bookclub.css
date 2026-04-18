@@ -67,6 +67,10 @@ body {
     justify-content: space-between;
 }
 
+.book {
+    padding-right: 2rem;
+}
+
 .title {
     font-size: 130%;
     font-weight: bold;

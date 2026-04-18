@@ -3,6 +3,7 @@ let clubId = window.location.href;
 clubId = clubId.replace(window.location.origin, '').replace('/bookclub/', '');
 
 let clubData = null;
+let newClub = false;
 
 
 function addToSchedule(html) {
@@ -41,6 +42,10 @@ function buildBooks(books) {
 
 function buildSchedule(clubData) {
   let html = '';
+  if (clubData.events.length < 1) {
+    html += newEventButton();
+    return html;
+  }
   Object.entries(clubData.events).forEach(([key, event]) => {
       const date = keyToDate(key);
       const month = date.toLocaleString('default', { month: 'short' }); // "Apr"
@@ -67,15 +72,22 @@ function buildSchedule(clubData) {
       </div>`;
   });
 
-  const newDate = nextThirdWednesday();
-
-  html += `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event</div>`;
-
+  html += newEventButton();
   return html;
 }
 
+function newEventButton () {
+  const newDate = nextThirdWednesday();
+  return `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event</div>`;
+}
+
 function nextThirdWednesday() {
-    const lastKey = Object.keys(clubData.events).sort().at(-1);
+    let lastKey = Object.keys(clubData.events).sort().at(-1);
+    if (!lastKey) {
+      // if there are no events, start from the 1st of next month
+      const now = new Date();
+      lastKey = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}01`;
+    }
     const after = keyToDate(lastKey);
 
     // start from the 1st of the next month
@@ -96,7 +108,10 @@ function showDialog(html) {
   dialog.innerHTML = `<div class="dialog-close" onclick="closeDialog()"><i class="fas fa-close"></i></div>${html}`;
   dialog.classList.add('visible');
 
+  let deleteButton = html.includes('name="date"') ? `<div class="button" onclick="deleteEvent()">Delete</div>` : '';
+
   dialog.innerHTML +=`<div class="dialogbuttons">
+    ${deleteButton}
     <div class="button" onclick="closeDialog()">Cancel</div>
     <div class="button" onclick="saveForm()">Save</div>
     </div>`;
@@ -111,7 +126,7 @@ function editEvent(key) {
 }
 
 function editClub() {
-  showDialog(editClubForm());
+  showDialog(editClubForm(clubData));
 }
 
 function saveForm() {
@@ -122,6 +137,11 @@ function saveForm() {
       const { name, value } = field;
       newData[name] = value;
   });
+
+  if (newClub) {
+    clubId = newClubId(newData.clubname);
+  }
+
   // send this data to the server to sort out what to save
   fetch(`?c=${clubId}&d=${JSON.stringify(newData)}`).then(res => {
     if(res.ok) {
@@ -130,15 +150,43 @@ function saveForm() {
   );  
 }
 
-function editClubForm() {
+function newClubId(clubname) {
+  return clubname.split(' ').map(w => w[0].toLowerCase()).join('');
+}
+
+function deleteEvent() {
+  if (confirm('Are you sure you want to delete this event?')) {
+    const dialog = document.querySelector('.dialog');
+    const altField = dialog.querySelector('input[name="alt"]');
+    altField.value = 'DELETE';
+    saveForm();
+  }
+}
+
+
+function editClubForm(clubData) {
   let html = `<div class="editform">`;
-  html += makeInputRow('Club name', inputField('clubname', clubData.name, 'Bookclub'));
+  html += makeInputRow('Club name', inputField('clubname', clubData.name, 'Bookclub name'));
   html += makeInputRow('Password', inputField('code', clubData.code, 'Secret password'));
-  html += makeInputRow('Hosts', editList('hosts', clubData.members.map(m => m.name).join('\n')));
-  html += makeInputRow('Locations', editList('locations', clubData.locations.join('\n')));
+  html += makeInputRow('Hosts', editList('hosts', clubData.members.map(m => m.name).join('\n'), 'Host names (one per line)'));
+  html += makeInputRow('Locations', editList('locations', clubData.locations.join('\n'), 'Location names (one per line)'));
   html += '</div>';
   return html;
 }
+
+function addClub() {
+  const blankClubData = {
+    name: '',
+    code: '',
+    members: [],
+    locations: []
+  };
+
+  newClub = true;
+  
+  showDialog(editClubForm(blankClubData));
+}
+
 
 function editForm(key) {
   const blankEvent = { host: '', location: '', alt: '', books: [
@@ -251,7 +299,6 @@ function promptPassword() {
 
 // The show starts here
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log({ clubId });
   if (!clubId) {
     return;
   }

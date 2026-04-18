@@ -43,34 +43,36 @@ function filterEvents($club, $back) {
 function saveClub($c, $club, $data) {
     $newData = json_decode($data, true);
     if (!empty($newData['clubname'])) {
-        $club['name'] = $newData['clubname'];
-         $club['code'] = $newData['code'];
-         $club['members'] = array_map(function($name) { return ['name' => $name]; }, explode("\n", $newData['hosts'] ?? ''));
-         $club['locations'] = explode("\n", $newData['locations'] ?? '');
-        // grab hosts and locations and other club settings
-
+      $club['name'] = $newData['clubname'];
+      $club['code'] = $newData['code'];
+      $club['members'] = array_map(function($name) { return ['name' => $name]; }, explode("\n", $newData['hosts'] ?? ''));
+      $club['locations'] = explode("\n", $newData['locations'] ?? '');
     } elseif (!empty($newData['date'])) {
       // grab event values
       $key = toYmd($newData['date']);
-      logIt(json_encode([$key, $newData['date']]));
-      $thisEvent = $club['events'][$key];
-
-      $newEvent = [];
-      $newEvent['host'] = $newData['host'] ?? '';
-      $newEvent['location'] = $newData['location'] ?? '';
-      $newEvent['alt'] = $newData['alt'] ?? '';
-      // scan for up to 3 books
-      for ($i = 0; $i < 3; $i++) {
-        if (!empty($newData["title-{$i}"])) {
-          $newEvent['books'][] = [
-            'title' => $newData["title-{$i}"],
-            'by' => $newData["by-{$i}"],
-            'url' => $newData["url-{$i}"],
-          ];
+      logIt("Saving event for date {$key} {$newData['alt']}");
+      if ($newData['alt'] == 'DELETE') {
+        unset($club['events'][$key]);
+      } else {
+        $thisEvent = $club['events'][$key];
+        $newEvent = [];
+        $newEvent['host'] = $newData['host'] ?? '';
+        $newEvent['location'] = $newData['location'] ?? '';
+        $newEvent['alt'] = $newData['alt'] ?? '';
+        // scan for up to 3 books
+        for ($i = 0; $i < 3; $i++) {
+          if (!empty($newData["title-{$i}"])) {
+            $newEvent['books'][] = [
+              'title' => $newData["title-{$i}"],
+              'by' => $newData["by-{$i}"],
+              'url' => $newData["url-{$i}"],
+            ];
+          }
         }
+        $club['events'][$key] = $newEvent;
+        logIt(json_encode($club['events'][$key]));
+
       }
-      $club['events'][$key] = $newEvent;
-      logIt(json_encode($club['events'][$key]));
     }
 
     file_put_contents("_${c}.json", json_encode($club, JSON_PRETTY_PRINT));
@@ -109,6 +111,7 @@ function outputPage($v) {
         $clubId = str_replace(['_', '.json'], '', $file);
         $clubList .= "<a href='?$clubId'>{$clubData['name']}</a>";
     }
+    $clubList .= '<div class="button addbutton" onclick="addClub()">+ Add another club</div>';
     print "<!DOCTYPE html>
     <html dir='ltr' lang='en'>
     <head>
