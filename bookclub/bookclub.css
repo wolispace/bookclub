@@ -146,6 +146,13 @@ body {
     background-color: rgb(119, 142, 189);
 }
 
+.addbutton {
+    display: inline;
+    color: black;
+    padding: 0.1rem 0.75rem;
+    border-radius: 1rem;
+}
+
 .editform {
     display: flex;
     flex-direction: column;

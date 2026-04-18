@@ -67,6 +67,10 @@ function buildSchedule(clubData) {
       </div>`;
   });
 
+  const newDate = new Date().toISOString().slice(0,10).replace(/-/g,'');
+
+  html += `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event [${newDate}]</div>`;
+
   return html;
 }
 
@@ -108,7 +112,6 @@ function saveForm() {
       location.reload();
     }}
   );  
-
 }
 
 function editClubForm() {
@@ -121,10 +124,12 @@ function editClubForm() {
   return html;
 }
 
-
 function editForm(key) {
-  console.log({clubData});
-  const event = clubData.events[key];
+  const blankEvent = { host: '', location: '', alt: '', books: [
+    { title: '', by: '', url: '' }
+  ] };
+
+  const event = clubData.events[key] || blankEvent;
   const date = keyToDate(key);
   const editDate = date.toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' }); // "01 Feb 2026"
   const hostsSelect = makeHostSources();
@@ -173,7 +178,7 @@ function makeBookRows(books) {
   for(const [index, book] of books.entries()) {
     html += makeBookRow(book, index);
   }
-  html += `<div class="addbook" onclick="addBook(${books.length})">+ Add another book</div>`;
+  html += `<div class="addbook button addbutton" onclick="addBook(${books.length})">+ Add another book</div>`;
   return html;
 }
 
