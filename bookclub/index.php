@@ -68,6 +68,13 @@ function saveClub($c, $club, $data) {
             ];
           }
         }
+        if (empty($newEvent['books']['title-0'])) {
+          $newEvent['books'][] = [
+            'title' => 'Placeholder',
+            'by' => '',
+            'url' => '',
+          ];
+        }
         $club['events'][$key] = $newEvent;
       }
     }

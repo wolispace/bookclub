@@ -21,13 +21,70 @@ function addEditClubButton() {
   titleElement.innerHTML += `<div class="editclub" onclick="editClub()"><i class="fas fa-pencil"></i></div>`;
 }
 
-
 function getClubData($clubId) {
   return fetch(`?c=${$clubId}`);
+}
+async function editEvent(key) {
+  await refreshClubData();
+  showDialog(editForm(key));
+}
+
+async function editClub() {
+  await refreshClubData();
+  showDialog(editClubForm(clubData));
+}
+
+async function refreshClubData() {
+  const res = await getClubData(clubId);
+  clubData = await res.json();
+}
+
+async function saveForm() {
+  const dialog = document.querySelector('.dialog');
+  const fields = dialog.querySelectorAll('input, select, textarea');
+  const newData = {};
+  fields.forEach(field => {
+      const { name, value } = field;
+      newData[name] = value;
+  });
+
+  if (newClub) {
+    clubId = newClubId(newData.clubname);
+  }
+
+  // send this data to the server to sort out what to save
+  fetch(`?c=${clubId}&d=${JSON.stringify(newData)}`).then(res => {
+    if(res.ok) {
+      location.reload();
+    }}
+  );  
+}
+
+async function addEvent() {
+  await refreshClubData();
+  const newDate = nextThirdWednesday();
+  showDialog(editForm(newDate));
+}
+
+
+function deleteEvent() {
+  if (confirm('Are you sure you want to delete this event?')) {
+    const dialog = document.querySelector('.dialog');
+    const altField = dialog.querySelector('input[name="alt"]');
+    altField.value = 'DELETE';
+    saveForm();
+  }
+}
+
+function newClubId(clubname) {
+  return clubname.split(' ').map(w => w[0].toLowerCase()).join('');
 }
 
 function buildBooks(books) {
   let html = '';
+  if (!books || books.length < 1) {
+    return html;
+  }
   for (const book of books) {
     const link = book.url ? `<a href="${book.url}" target="_blank"><i class="fa fa-up-right-from-square"></i></a>` : '';
     const by = book.by ? `by ${book.by}` : '';
@@ -37,7 +94,6 @@ function buildBooks(books) {
     </div>`;
   }
   return html;
-
 }
 
 function buildSchedule(clubData) {
@@ -53,7 +109,7 @@ function buildSchedule(clubData) {
       const monthday = date.getDate(); // 15 // "December", "September"
       const { host, location, books } = event;
 
-      const showlocation = event.alt !== '' ? event.alt : clubData.locations[location];
+      const showlocation = event.alt !== '' ? event.alt : clubData.locations[location] ?? '';
 
       const booksHtml = buildBooks(books);
       html += `<div class="event">
@@ -77,8 +133,7 @@ function buildSchedule(clubData) {
 }
 
 function newEventButton () {
-  const newDate = nextThirdWednesday();
-  return `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event</div>`;
+  return `<div class="addevent button addbutton" onclick="addEvent()">+ Add another event</div>`;
 }
 
 function nextThirdWednesday() {
@@ -102,7 +157,6 @@ function nextThirdWednesday() {
     return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 }
 
-
 function showDialog(html) {
   const dialog = document.querySelector('.dialog');
   dialog.innerHTML = `<div class="dialog-close" onclick="closeDialog()"><i class="fas fa-close"></i></div>${html}`;
@@ -120,49 +174,6 @@ function showDialog(html) {
 function closeDialog() {
   document.querySelector('.dialog').classList.remove('visible');
 }
-
-function editEvent(key) {
-  showDialog(editForm(key));
-}
-
-function editClub() {
-  showDialog(editClubForm(clubData));
-}
-
-function saveForm() {
-  const dialog = document.querySelector('.dialog');
-  const fields = dialog.querySelectorAll('input, select, textarea');
-  const newData = {};
-  fields.forEach(field => {
-      const { name, value } = field;
-      newData[name] = value;
-  });
-
-  if (newClub) {
-    clubId = newClubId(newData.clubname);
-  }
-
-  // send this data to the server to sort out what to save
-  fetch(`?c=${clubId}&d=${JSON.stringify(newData)}`).then(res => {
-    if(res.ok) {
-      location.reload();
-    }}
-  );  
-}
-
-function newClubId(clubname) {
-  return clubname.split(' ').map(w => w[0].toLowerCase()).join('');
-}
-
-function deleteEvent() {
-  if (confirm('Are you sure you want to delete this event?')) {
-    const dialog = document.querySelector('.dialog');
-    const altField = dialog.querySelector('input[name="alt"]');
-    altField.value = 'DELETE';
-    saveForm();
-  }
-}
-
 
 function editClubForm(clubData) {
   let html = `<div class="editform">`;
@@ -238,7 +249,11 @@ function makeLocationSources() {
 
 function makeBookRows(books) {
   let html = '';
-  console.log(books);
+ if (!books || books.length < 1) {
+    html += makeBookRow({ title: '', by: '', url: '' }, 0);
+    return html;
+ }
+
   for(const [index, book] of books.entries()) {
     html += makeBookRow(book, index);
   }
@@ -302,8 +317,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!clubId) {
     return;
   }
-  const res = await getClubData(clubId);
-  clubData = await res.json();
+  await refreshClubData();
+
   if (promptPassword()) {
     AddToClubTitle(clubData.name);
     addEditClubButton();
