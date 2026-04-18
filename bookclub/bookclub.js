@@ -67,11 +67,27 @@ function buildSchedule(clubData) {
       </div>`;
   });
 
-  const newDate = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const newDate = nextThirdWednesday();
 
-  html += `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event [${newDate}]</div>`;
+  html += `<div class="addevent button addbutton" onclick="editEvent('${newDate}')">+ Add another event</div>`;
 
   return html;
+}
+
+function nextThirdWednesday() {
+    const lastKey = Object.keys(clubData.events).sort().at(-1);
+    const after = keyToDate(lastKey);
+
+    // start from the 1st of the next month
+    let d = new Date(after.getFullYear(), after.getMonth() + 1, 1);
+
+    // find first Wednesday
+    while (d.getDay() !== 3) d.setDate(d.getDate() + 1);
+
+    // advance to 3rd Wednesday
+    d.setDate(d.getDate() + 14);
+
+    return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 }
 
 
