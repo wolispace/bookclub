@@ -102,7 +102,6 @@ function saveForm() {
       const { name, value } = field;
       newData[name] = value;
   });
-  console.log(newData);
   // send this data to the server to sort out what to save
   fetch(`?c=${clubId}&d=${JSON.stringify(newData)}`).then(res => {
     if(res.ok) {
@@ -171,7 +170,7 @@ function makeBookRows(books) {
   for(const [index, book] of books.entries()) {
     html += makeBookRow(book, index);
   }
-  html += `<div class="addbook" onclick="addBook()">+ Add another book</div>`;
+  html += `<div class="addbook" onclick="addBook(${books.length})">+ Add another book</div>`;
   return html;
 }
 
@@ -185,8 +184,12 @@ function makeBookRow(book, index) {
 
 }
 
+function addBook(index) {
+  const html = makeBookRow({ title: '', by: '', url: '' }, index);
+  document.querySelector('.addbook').insertAdjacentHTML('beforebegin', html); 
+}
+
 function selectList(sources, selected, name) {
-  console.log({sources, selected, name});
   let html = `<select name="${name}"><option></option>`;
   for( const source of sources) {
     const isSelected = source.key == selected ? 'selected' : '';
@@ -200,6 +203,10 @@ function selectList(sources, selected, name) {
 
 // The show starts here
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log({ clubId });
+  if (!clubId) {
+    return;
+  }
   const res = await getClubData(clubId);
   clubData = await res.json();
   AddToClubTitle(clubData.name);

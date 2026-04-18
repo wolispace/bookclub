@@ -82,6 +82,14 @@ function outputJson($data) {
 }
 
 function outputPage($v) {
+
+    $clubList = 'Pick a club';
+    $files = glob('_*.json');
+    foreach($files as $file) {
+        $clubData = json_decode(file_get_contents($file), true);
+        $clubId = str_replace(['_', '.json'], '', $file);
+        $clubList .= "<a href='$clubId'>{$clubData['name']}</a>";
+    }
     print "<!DOCTYPE html>
     <html dir='ltr' lang='en'>
     <head>
@@ -96,7 +104,7 @@ function outputPage($v) {
     </head>
     <body>
     <h1 class='clubtitle'>Bookclub</h1>
-    <div class='schedule'></div>
+    <div class='schedule'>{$clubList}</div>
     <div class='dialog'></div>
     </body>
     </html>";
