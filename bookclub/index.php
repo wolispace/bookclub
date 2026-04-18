@@ -27,6 +27,7 @@ function saveClub($c, $club, $data) {
     $newData = json_decode($data, true);
     if (!empty($newData['clubname'])) {
         $club['name'] = $newData['clubname'];
+         $club['code'] = $newData['code'];
         // grab hosts and locations and other club settings
 
     } elseif (!empty($newData['date'])) {

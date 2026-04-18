@@ -114,6 +114,7 @@ function saveForm() {
 function editClubForm() {
   let html = `<div class="editform">`;
   html += makeInputRow('Club name', inputField('clubname', clubData.name, 'Bookclub'));
+  html += makeInputRow('Password', inputField('code', clubData.code, 'Secret password'));
   html += '</div>';
   return html;
 }
@@ -200,6 +201,19 @@ function selectList(sources, selected, name) {
   return html;
 }
 
+function promptPassword() {
+  let password = localStorage.getItem(clubId);
+  if (password == clubData.code) {
+    return true;
+  }
+  password = prompt('Enter password');
+  if (password == clubData.code) {   
+    localStorage.setItem(clubId, password);
+    return true;
+  }
+
+  return false;
+}
 
 // The show starts here
 document.addEventListener('DOMContentLoaded', async () => {
@@ -209,7 +223,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   const res = await getClubData(clubId);
   clubData = await res.json();
-  AddToClubTitle(clubData.name);
-  addEditClubButton();
-  addToSchedule(buildSchedule(clubData));
+  if (promptPassword()) {
+    AddToClubTitle(clubData.name);
+    addEditClubButton();
+    addToSchedule(buildSchedule(clubData));
+  }
 });
