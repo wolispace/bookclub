@@ -29,9 +29,10 @@ function buildBooks(books) {
   let html = '';
   for (const book of books) {
     const link = book.url ? `<a href="${book.url}" target="_blank"><i class="fa fa-up-right-from-square"></i></a>` : '';
+    const by = book.by ? `by ${book.by}` : '';
     html += `<div class="book">
        <div class="title">${book.title}</div>
-       <div class="by">by ${book.by} ${link}</div>
+       <div class="by">${by} ${link}</div>
     </div>`;
   }
   return html;
@@ -185,10 +186,11 @@ function makeBookRow(book, index) {
 }
 
 function selectList(sources, selected, name) {
+  console.log({sources, selected, name});
   let html = `<select name="${name}"><option></option>`;
   for( const source of sources) {
-    const isSelected = source.key === selected ? 'selected' : '';
-    html += `<option value="${source.value}" ${isSelected}>${source.value}</option>`;
+    const isSelected = source.key == selected ? 'selected' : '';
+    html += `<option value="${source.key}" ${isSelected}>${source.value}</option>`;
   }
   html += `</select>`;
 

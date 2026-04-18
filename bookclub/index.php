@@ -20,22 +20,49 @@ if (empty($c)) {
 }
 
 function getClub($c) {
-    return json_decode(file_get_contents("_${c}.json"));
+    return json_decode(file_get_contents("_${c}.json"), true);
 }
 
 function saveClub($c, $club, $data) {
-    $newData = json_decode($data);
-    foreach ($newData as $key => $value) {
-        logIt("Setting {$key} to {$value}");
-        if ($key == 'clubname') {
-            $club->name = $value;
+    $newData = json_decode($data, true);
+    if (!empty($newData['clubname'])) {
+        $club['name'] = $newData['clubname'];
+        // grab hosts and locations and other club settings
+
+    } elseif (!empty($newData['date'])) {
+      // grab event values
+      $key = toYmd($newData['date']);
+      logIt(json_encode([$key, $newData['date']]));
+      $thisEvent = $club['events'][$key];
+
+      $newEvent = [];
+      $newEvent['host'] = $newData['host'] ?? '';
+      $newEvent['location'] = $newData['location'] ?? '';
+      $newEvent['alt'] = $newData['alt'] ?? '';
+      // scan for up to 3 books
+      for ($i = 0; $i < 3; $i++) {
+        if (!empty($newData["title-{$i}"])) {
+          $newEvent['books'][] = [
+            'title' => $newData["title-{$i}"],
+            'by' => $newData["by-{$i}"],
+            'url' => $newData["url-{$i}"],
+          ];
         }
-        //$club->$key = $value;
+      }
+      $club['events'][$key] = $newEvent;
+      logIt(json_encode($club['events'][$key]));
     }
 
     file_put_contents("_${c}.json", json_encode($club, JSON_PRETTY_PRINT));
 
     return $club;
+}
+
+function toYmd($str) {
+    foreach (['d M Y', 'd/m/Y'] as $format) {
+        $date = DateTime::createFromFormat($format, $str);
+        if ($date) return $date->format('Ymd');
+    }
 }
 
 function logIt($str) {
