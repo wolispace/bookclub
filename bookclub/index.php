@@ -2,6 +2,7 @@
 
 $c = $_REQUEST['c'] ?? '';
 $data = $_REQUEST['d'] ?? '';
+$back = $_REQUEST['b'] ?? date('Ymd');
 $c = cleanString($c);
 
 // unique code for js loading
@@ -12,7 +13,8 @@ logIt(json_encode([$_REQUEST, $c]));
 if (empty($c)) {
   outputPage($v);
 } else {
-  $club = getClub($c);
+  $club = getClub($c, $back);
+  $club = filterEvents($club, $back);
   if (!empty($data)) {
     $club = saveClub($c, $club, $data);
   }
@@ -22,6 +24,21 @@ if (empty($c)) {
 function getClub($c) {
     return json_decode(file_get_contents("_${c}.json"), true);
 }
+
+function filterEvents($club, $back) {
+  if (empty($back)) {
+    return $club;
+  }
+  $filtered = [];
+  foreach ($club['events'] as $key => $event) {
+    if ($key >= $back) {
+      $filtered[$key] = $event;
+    }
+  }
+  $club['events'] = $filtered;
+  return $club;
+}
+
 
 function saveClub($c, $club, $data) {
     $newData = json_decode($data, true);
@@ -89,7 +106,7 @@ function outputPage($v) {
     foreach($files as $file) {
         $clubData = json_decode(file_get_contents($file), true);
         $clubId = str_replace(['_', '.json'], '', $file);
-        $clubList .= "<a href='$clubId'>{$clubData['name']}</a>";
+        $clubList .= "<a href='?$clubId'>{$clubData['name']}</a>";
     }
     print "<!DOCTYPE html>
     <html dir='ltr' lang='en'>
