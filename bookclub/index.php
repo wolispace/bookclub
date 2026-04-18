@@ -45,6 +45,8 @@ function saveClub($c, $club, $data) {
     if (!empty($newData['clubname'])) {
         $club['name'] = $newData['clubname'];
          $club['code'] = $newData['code'];
+         $club['members'] = array_map(function($name) { return ['name' => $name]; }, explode("\n", $newData['hosts'] ?? ''));
+         $club['locations'] = explode("\n", $newData['locations'] ?? '');
         // grab hosts and locations and other club settings
 
     } elseif (!empty($newData['date'])) {
@@ -90,7 +92,6 @@ function logIt($str) {
 
 function cleanString($str) {
   $str = preg_replace('/[^a-z0-9]/i', '', $str);
-
   return substr($str, 0, 15);
 }
 

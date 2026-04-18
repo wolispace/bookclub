@@ -115,6 +115,8 @@ function editClubForm() {
   let html = `<div class="editform">`;
   html += makeInputRow('Club name', inputField('clubname', clubData.name, 'Bookclub'));
   html += makeInputRow('Password', inputField('code', clubData.code, 'Secret password'));
+  html += makeInputRow('Hosts', editList('hosts', clubData.members.map(m => m.name).join('\n')));
+  html += makeInputRow('Locations', editList('locations', clubData.locations.join('\n')));
   html += '</div>';
   return html;
 }
@@ -198,6 +200,17 @@ function selectList(sources, selected, name) {
   }
   html += `</select>`;
 
+  return html;
+}
+
+function editList(name, itemList) {
+  let items = itemList.split('\n');
+  let html = '';
+  html += `<textarea class="editlist" name="${name}">`;
+  items.forEach((item, index) => {
+    html += `${item}\n`;
+  });
+  html += `</textarea>`;
   return html;
 }
 
