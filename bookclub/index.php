@@ -50,7 +50,6 @@ function saveClub($c, $club, $data) {
     } elseif (!empty($newData['date'])) {
       // grab event values
       $key = toYmd($newData['date']);
-      logIt("Saving event for date {$key} {$newData['alt']}");
       if ($newData['alt'] == 'DELETE') {
         unset($club['events'][$key]);
       } else {
@@ -70,8 +69,6 @@ function saveClub($c, $club, $data) {
           }
         }
         $club['events'][$key] = $newEvent;
-        logIt(json_encode($club['events'][$key]));
-
       }
     }
 
