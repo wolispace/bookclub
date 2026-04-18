@@ -264,7 +264,7 @@ function addBook(index) {
 function selectList(sources, selected, name) {
   let html = `<select name="${name}"><option></option>`;
   for( const source of sources) {
-    const isSelected = source.key == selected ? 'selected' : '';
+    const isSelected = source.key === selected ? 'selected' : '';
     html += `<option value="${source.key}" ${isSelected}>${source.value}</option>`;
   }
   html += `</select>`;
@@ -272,10 +272,10 @@ function selectList(sources, selected, name) {
   return html;
 }
 
-function editList(name, itemList) {
+function editList(name, itemList, placeholder) {
   let items = itemList.split('\n');
   let html = '';
-  html += `<textarea class="editlist" name="${name}">`;
+  html += `<textarea class="editlist" name="${name}" placeholder="${placeholder}">`;
   items.forEach((item, index) => {
     html += `${item}\n`;
   });
