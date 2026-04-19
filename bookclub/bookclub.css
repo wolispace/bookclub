@@ -126,6 +126,14 @@ body {
     font-size: 120%;
 }
 
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+.overlay.visible { display: block; }
+
 .dialogbuttons {
     display: flex;
     justify-content: flex-end;

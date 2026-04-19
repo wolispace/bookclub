@@ -164,6 +164,7 @@ function nextThirdWednesday() {
 
 function showDialog(html) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelector('.overlay').classList.add('visible');
   const dialog = document.querySelector('.dialog');
   dialog.innerHTML = `<div class="dialog-close" onclick="closeDialog()"><i class="fas fa-close"></i></div>${html}`;
   dialog.classList.add('visible');
@@ -178,6 +179,7 @@ function showDialog(html) {
 }
 
 function closeDialog() {
+  document.querySelector('.overlay').classList.remove('visible');
   document.querySelector('.dialog').classList.remove('visible');
 }
 
