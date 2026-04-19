@@ -284,10 +284,28 @@ function addBook(index) {
   document.querySelector('.addbook').insertAdjacentHTML('beforebegin', html); 
 }
 
+function isNumeric(val) {
+  return !isNaN(parseFloat(val)) && isFinite(val);
+}
+
 function selectList(sources, selected, name) {
-  let html = `<select name="${name}"><option></option>`;
+  let html = `<select name="${name}"><option value=""></option>`;
   for( const source of sources) {
-    const isSelected = source.key == selected ? 'selected' : '';
+    const sameValue = source.key === 0 ? selected === 0 || selected === "0"
+           : (source.key === "" && (selected === "" || selected == null))
+           || source.key == selected;
+           
+    const isSelected = sameValue ? 'selected' : '';  
+    if (isNumeric(source.key)) {
+      console.log(`Comparing number [${source.key}]`);
+    } 
+    if (isNumeric(selected)) {
+      console.log(`With number [${source.key}]`);
+    } 
+       
+    if (sameValue) {
+      console.log(`${name} Selected  [${source.key}] == [${selected}]`);
+    }
     html += `<option value="${source.key}" ${isSelected}>${source.value}</option>`;
   }
   html += `</select>`;

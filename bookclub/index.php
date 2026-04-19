@@ -73,9 +73,8 @@ function saveClub($c, $club, $data) {
           }
         }
         if (!$foundBook) {
-          logIt("No book title provided, adding placeholder");
           $newEvent['books'][] = [
-            'title' => 'Placeholder',
+            'title' => 'Title',
             'by' => '',
             'url' => '',
           ];
