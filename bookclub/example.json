@@ -1,0 +1,98 @@
+{
+    "name": "TEST bookclub Y",
+    "dateformat": {
+        "month": 1,
+        "dow": 0,
+        "date": 0,
+        "year": 0
+    },
+    "code": "mouse",
+    "members": [
+        {
+            "name": "Clare"
+        },
+        {
+            "name": "Kay"
+        },
+        {
+            "name": "Jennifer"
+        }
+    ],
+    "locations": [
+        "Clare's 28 Essex St North, Goodwood",
+        "Kay's 55 Porter st, Parkside",
+        "Jeniffer's 110 Rose St Wayville"
+],
+    "events": {
+        "20260521": {
+            "host": "Clare",
+            "location": 0,
+            "alt": "",
+            "books": [
+                {
+                    "title": "Sunshine of the gods",
+                    "by": "Sigrid Nunez",
+                    "url": ""
+                },
+                {
+                    "title": "The book of lost names",
+                    "by": "Kristin Harmel",
+                    "url": "https:\/\/www.goodreads.com\/book\/show\/43262228-the-book-of-lost-names"
+                }
+            ]
+        },
+        "20260617": {
+            "host": "",
+            "location": "0",
+            "alt": "",
+            "books": [
+                {
+                    "title": "Book First",
+                    "by": "",
+                    "url": ""
+                }
+            ]
+        },
+        "20260715": {
+            "host": "",
+            "location": "",
+            "alt": "",
+            "books": [
+                {
+                    "title": "A book",
+                    "by": "",
+                    "url": ""
+                }
+            ]
+        },
+        "20260819": {
+            "host": "",
+            "location": "",
+            "alt": "",
+            "books": [
+                {
+                    "title": "Mouse house",
+                    "by": "",
+                    "url": ""
+                },
+                {
+                    "title": "Placeholder",
+                    "by": "",
+                    "url": ""
+                }
+            ]
+        },
+        "20260916": {
+            "host": "",
+            "location": "",
+            "alt": "",
+            "books": [
+                {
+                    "title": "Book four",
+                    "by": "",
+                    "url": ""
+                }
+            ]
+        }
+    }
+}
