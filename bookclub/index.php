@@ -120,7 +120,7 @@ function outputPage($v) {
         $clubId = str_replace(['_', '.json'], '', $file);
         $clubList .= "<a href='?$clubId'>{$clubData['name']}</a>";
     }
-    $clubList .= '<div class="button addbutton" onclick="addClub()">+ Add another club</div>';
+    $clubList .= '<div class="button addbutton" onclick="addClub()">+ Start a new bookclub</div>';
     print "<!DOCTYPE html>
     <html dir='ltr' lang='en'>
     <head>
