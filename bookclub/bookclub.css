@@ -157,6 +157,15 @@ body {
     border-radius: 1rem;
 }
 
+.switchclub {
+    cursor: pointer;
+}
+
+.switchclub:hover {
+    color: white;
+}
+
+
 .editform {
     display: flex;
     flex-direction: column;

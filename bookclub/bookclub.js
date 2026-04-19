@@ -129,7 +129,12 @@ function buildSchedule(clubData) {
   });
 
   html += newEventButton();
+  html += switchClubButton();
   return html;
+}
+
+function switchClubButton() {
+  return `<div class="switchclub" onclick="switchClub()"><i class="fas fa-arrow-left"></i> Switch clubs</div>`;
 }
 
 function newEventButton () {
@@ -312,11 +317,26 @@ function promptPassword() {
   return false;
 }
 
+function switchClub() {
+  localStorage.removeItem('clubId');
+  window.location.href = '/bookclub/';
+}
+
 // The show starts here
 document.addEventListener('DOMContentLoaded', async () => {
   if (!clubId) {
+    const savedClub = localStorage.getItem('clubId');
+    if (savedClub) {
+      window.location.href = `/bookclub/${savedClub}`;
+      return;
+    }
+  } else {
+    localStorage.setItem('clubId', clubId);
+  }
+  if (!clubId) {
     return;
   }
+
   await refreshClubData();
 
   if (promptPassword()) {
