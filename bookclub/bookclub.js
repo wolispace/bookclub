@@ -163,6 +163,7 @@ function nextThirdWednesday() {
 }
 
 function showDialog(html) {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   const dialog = document.querySelector('.dialog');
   dialog.innerHTML = `<div class="dialog-close" onclick="closeDialog()"><i class="fas fa-close"></i></div>${html}`;
   dialog.classList.add('visible');
@@ -211,7 +212,7 @@ function editForm(key) {
 
   const event = clubData.events[key] || blankEvent;
   const date = keyToDate(key);
-  const editDate = date.toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' }); // "01 Feb 2026"
+  const editDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); // "01 Feb 2026"
   const hostsSelect = makeHostSources();
   let html = `<div class="editform">`;
   html += makeInputRow('Date', inputField('date', editDate, 'DD MMM YYYY'));

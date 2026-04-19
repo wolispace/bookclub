@@ -58,9 +58,13 @@ function saveClub($c, $club, $data) {
         $newEvent['host'] = $newData['host'] ?? '';
         $newEvent['location'] = $newData['location'] ?? '';
         $newEvent['alt'] = $newData['alt'] ?? '';
+        logIt("Saving event for {$key} with " . json_encode($newData));
+
         // scan for up to 3 books
+        $foundBook = false;
         for ($i = 0; $i < 3; $i++) {
           if (!empty($newData["title-{$i}"])) {
+            $foundBook = true;
             $newEvent['books'][] = [
               'title' => $newData["title-{$i}"],
               'by' => $newData["by-{$i}"],
@@ -68,7 +72,8 @@ function saveClub($c, $club, $data) {
             ];
           }
         }
-        if (empty($newEvent['books']['title-0'])) {
+        if (!$foundBook) {
+          logIt("No book title provided, adding placeholder");
           $newEvent['books'][] = [
             'title' => 'Placeholder',
             'by' => '',

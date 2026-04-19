@@ -152,7 +152,7 @@ body {
 
 .addbutton {
     display: inline;
-    color: black;
+    color: rgba(255, 255,255, 0.85);
     padding: 0.1rem 0.75rem;
     border-radius: 1rem;
 }
