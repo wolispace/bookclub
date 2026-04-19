@@ -13,15 +13,16 @@ logIt(json_encode([$_REQUEST, $c]));
 if (empty($c)) {
   outputPage($v);
 } else {
-  $club = getClub($c, $back);
+  $club = getClub();
   $club = filterEvents($club, $back);
   if (!empty($data)) {
-    $club = saveClub($c, $club, $data);
+    $club = saveClub($club, $data);
   }
   outputJson($club);
 }
 
-function getClub($c) {
+function getClub() {
+    global $c;
     return json_decode(file_get_contents("_${c}.json"), true);
 }
 
@@ -39,10 +40,29 @@ function filterEvents($club, $back) {
   return $club;
 }
 
+function checkClubName($name) {
+  global $c;
+  if ($c == 'NEWCLUB') {
+    $words = explode(' ', $name);
+    $acronym = '';
+    foreach($words as $word) {
+        $acronym .= strtolower(substr($word, 0, 1));
+    }
+    $counter = 1;
+    $c = $acronym;
+    while (file_exists("_${c}.json")) {
+        $c = "{$acronym}{$counter}";
+        $counter++;
+    }
+  }
+  return $c;
+}
 
-function saveClub($c, $club, $data) {
+function saveClub($club, $data) {
+    global $c;
     $newData = json_decode($data, true);
     if (!empty($newData['clubname'])) {
+      $c = checkClubName($newData['clubname']);
       $club['name'] = $newData['clubname'];
       $club['code'] = $newData['code'];
       $club['members'] = array_map(function($name) { return ['name' => $name]; }, explode("\n", $newData['hosts'] ?? ''));

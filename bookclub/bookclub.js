@@ -49,7 +49,7 @@ async function saveForm() {
   });
 
   if (newClub) {
-    clubId = newClubId(newData.clubname);
+    clubId = 'NEWCLUB';
   }
 
   // send this data to the server to sort out what to save
@@ -294,7 +294,7 @@ function selectList(sources, selected, name) {
     const sameValue = source.key === 0 ? selected === 0 || selected === "0"
            : (source.key === "" && (selected === "" || selected == null))
            || source.key == selected;
-           
+
     const isSelected = sameValue ? 'selected' : '';  
     if (isNumeric(source.key)) {
       console.log(`Comparing number [${source.key}]`);
