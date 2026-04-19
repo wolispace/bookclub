@@ -287,7 +287,7 @@ function addBook(index) {
 function selectList(sources, selected, name) {
   let html = `<select name="${name}"><option></option>`;
   for( const source of sources) {
-    const isSelected = source.key === selected ? 'selected' : '';
+    const isSelected = source.key == selected ? 'selected' : '';
     html += `<option value="${source.key}" ${isSelected}>${source.value}</option>`;
   }
   html += `</select>`;
