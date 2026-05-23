@@ -1,7 +1,7 @@
 
 let clubId = window.location.href;
 clubId = clubId.replace(window.location.origin, '').replace('/bookclub/', '');
-
+let club_id = clubId.replace('?', '');
 let clubData = null;
 let newClub = false;
 let back = false;
@@ -141,22 +141,29 @@ function calendarIcon(key, event, date) {
   const fmt = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
   const start = fmt(date) + 'T190000';
   const end = fmt(date) + 'T210000';
+  const summary = `Bookclub (${club_id}) ${event.host}`;
+
   const location = event.alt || clubData.locations[event.location] || '';
-  const title = encodeURIComponent(clubData.name);
+
   const ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'BEGIN:VEVENT',
-    `DTSTART:${start}`,
-    `DTEND:${end}`,
-    `SUMMARY:${clubData.name}`,
-    `LOCATION:${location}`,
-    'END:VEVENT',
-    'END:VCALENDAR'
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+    `DTSTART:${start}`, `DTEND:${end}`,
+    `SUMMARY:${summary}`, `LOCATION:${location}`,
+    'END:VEVENT', 'END:VCALENDAR'
   ].join('\r\n');
-  const uri = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
-  return `<a class="fas cal-icon" href="${uri}" download="bookclub-${key}.ics" title="Add to calendar"><i class="fas fa-calendar-plus"></i></a>`;
+  const icsUri = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+
+  const gcUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE`
+    + `&text=${encodeURIComponent(summary)}`
+    + `&dates=${start}/${end}`
+    + `&location=${encodeURIComponent(location)}`;
+
+  const calUrl = (/Android/.test(navigator.userAgent)) ? gcUrl : icsUri;
+  // TODO: desktop users could add to Google calendar via gcUrl but how would we know without giving them two icons to choose from?
+
+  return `<a class="cal-icon" href="${calUrl}" target="_blank" title="Add to Calendar"><i class="fas fa-calendar-plus"></i></a>`;
 }
+
 
 function switchClubButton() {
   return `<div class="dialogbuttons"><div class="switchclub" onclick="switchClub()"><i class="fas fa-arrow-left"></i> Switch clubs</div>
