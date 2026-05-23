@@ -135,11 +135,15 @@ function buildSchedule(clubData) {
 }
 
 function switchClubButton() {
-  return `<div class="switchclub" onclick="switchClub()"><i class="fas fa-arrow-left"></i> Switch clubs</div>`;
+  return `<div class="dialogbuttons"><div class="switchclub" onclick="switchClub()"><i class="fas fa-arrow-left"></i> Switch clubs</div>
+  <span class="button" onclick="zoom(1)"><i class="fas fa-plus"></i></span> 
+  <span class="button" onclick="zoom(-1)"><i class="fas fa-minus"></i></span>
+  </div> 
+  `;
 }
 
 function newEventButton () {
-  return `<div class="addevent button addbutton" onclick="addEvent()">+ Add a new event</div>`;
+  return `<div class="addevent button addbutton" onclick="addEvent()">+ Add new event</div>`;
 }
 
 function wholeYearButton () {
@@ -386,37 +390,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-let startDist = 0;
-let startSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
 const ZOOM_KEY = 'bookclub_zoom';
+const DEFAULT_SIZE = 16;
 
-document.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    startDist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
-    );
-    startSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  }
-}, { passive: true });
-
-document.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) {
-    const dist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
-    );
-    const newSize = Math.min(Math.max(startSize * (dist / startDist), 12), 32);
-    document.documentElement.style.fontSize = newSize + 'px';
-  }
-}, { passive: true });
-
-// Restore on load
 const saved = localStorage.getItem(ZOOM_KEY);
 if (saved) document.documentElement.style.fontSize = saved + 'px';
 
-// Save on pinch end
-document.addEventListener('touchend', () => {
+function zoom(amount) {
   const current = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  localStorage.setItem(ZOOM_KEY, current);
-});
+  const newSize = Math.min(Math.max(current + amount, 12), 32);
+  document.documentElement.style.fontSize = newSize + 'px';
+  localStorage.setItem(ZOOM_KEY, newSize);
+}
