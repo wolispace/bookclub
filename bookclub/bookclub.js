@@ -4,7 +4,7 @@ clubId = clubId.replace(window.location.origin, '').replace('/bookclub/', '');
 
 let clubData = null;
 let newClub = false;
-
+let back = false;
 
 function addToSchedule(html) {
   let bodyElement = document.querySelector(".schedule");
@@ -129,6 +129,7 @@ function buildSchedule(clubData) {
   });
 
   html += newEventButton();
+  html += back ? currentButton() : wholeYearButton();
   html += switchClubButton();
   return html;
 }
@@ -138,7 +139,34 @@ function switchClubButton() {
 }
 
 function newEventButton () {
-  return `<div class="addevent button addbutton" onclick="addEvent()">+ Add another event</div>`;
+  return `<div class="addevent button addbutton" onclick="addEvent()">+ Add a new event</div>`;
+}
+
+function wholeYearButton () {
+  return `<div class="wholeyear button addbutton" onclick="wholeYear()">Show whole year</div>`;
+}
+
+function currentButton () {
+  return `<div class="wholeyear button addbutton" onclick="current()">Show current</div>`;
+}
+
+function wholeYear() {
+    const startYear = new Date().getFullYear() + '0101';
+    back = true;
+  getClubData(clubId + '&b=' + startYear).then(res => res.json()).then(data => {
+    clubData = data;
+    AddToClubTitle(`${clubData.name} - whole year`);
+    addToSchedule(buildSchedule(clubData));
+  });
+}
+
+function current() {
+  back = false;
+  getClubData(clubId).then(res => res.json()).then(data => {
+    clubData = data;
+    AddToClubTitle(`${clubData.name} - whole year`);
+    addToSchedule(buildSchedule(clubData));
+  });
 }
 
 function nextThirdWednesday() {
@@ -296,16 +324,7 @@ function selectList(sources, selected, name) {
            || source.key == selected;
 
     const isSelected = sameValue ? 'selected' : '';  
-    if (isNumeric(source.key)) {
-      console.log(`Comparing number [${source.key}]`);
-    } 
-    if (isNumeric(selected)) {
-      console.log(`With number [${source.key}]`);
-    } 
-       
-    if (sameValue) {
-      console.log(`${name} Selected  [${source.key}] == [${selected}]`);
-    }
+
     html += `<option value="${source.key}" ${isSelected}>${source.value}</option>`;
   }
   html += `</select>`;
@@ -365,4 +384,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     addEditClubButton();
     addToSchedule(buildSchedule(clubData));
   }
+});
+
+let startDist = 0;
+let startSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+const ZOOM_KEY = 'bookclub_zoom';
+
+document.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    startDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    startSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  }
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    const dist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    const newSize = Math.min(Math.max(startSize * (dist / startDist), 12), 32);
+    document.documentElement.style.fontSize = newSize + 'px';
+  }
+}, { passive: true });
+
+// Restore on load
+const saved = localStorage.getItem(ZOOM_KEY);
+if (saved) document.documentElement.style.fontSize = saved + 'px';
+
+// Save on pinch end
+document.addEventListener('touchend', () => {
+  const current = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  localStorage.setItem(ZOOM_KEY, current);
 });

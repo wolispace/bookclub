@@ -14,10 +14,10 @@ if (empty($c)) {
   outputPage($v);
 } else {
   $club = getClub();
-  $club = filterEvents($club, $back);
   if (!empty($data)) {
     $club = saveClub($club, $data);
   }
+  $club = filterEvents($club, $back);
   outputJson($club);
 }
 
@@ -102,6 +102,8 @@ function saveClub($club, $data) {
         $club['events'][$key] = $newEvent;
       }
     }
+    ksort($club['events']);
+
 
     file_put_contents("_${c}.json", json_encode($club, JSON_PRETTY_PRINT));
 
@@ -145,7 +147,7 @@ function outputPage($v) {
     <head>
         <title>Bookclub</title>
         <meta charset='utf-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0, interactive-widget=resizes-visual' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no, interactive-widget=resizes-visual'>
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
             integrity='sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=='
             crossorigin='anonymous' referrerpolicy='no-referrer' />
