@@ -122,9 +122,11 @@ function buildSchedule(clubData) {
         </div>
         <div class="bookbox">
           <div class="books">${booksHtml}</div>
-          <div class="location">${showlocation}</div>
+          <div class="location">${calendarIcon(key, event, date)} ${showlocation}</div>
         </div>
-        <div class="edit" onclick="editEvent('${key}')"><i class="fas fa-pencil"></i></div>
+        <div class="edit">
+          <i class="fas fa-pencil" onclick="editEvent('${key}')"></i>
+        </div>
       </div>`;
   });
 
@@ -132,6 +134,28 @@ function buildSchedule(clubData) {
   html += back ? currentButton() : wholeYearButton();
   html += switchClubButton();
   return html;
+}
+
+function calendarIcon(key, event, date) {
+  const pad = n => String(n).padStart(2, '0');
+  const fmt = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  const start = fmt(date) + 'T190000';
+  const end = fmt(date) + 'T210000';
+  const location = event.alt || clubData.locations[event.location] || '';
+  const title = encodeURIComponent(clubData.name);
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${clubData.name}`,
+    `LOCATION:${location}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  const uri = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+  return `<a class="fas cal-icon" href="${uri}" download="bookclub-${key}.ics" title="Add to calendar"><i class="fas fa-calendar-plus"></i></a>`;
 }
 
 function switchClubButton() {

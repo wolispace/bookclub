@@ -1,6 +1,6 @@
 :root {
-    --font-color: rgba(200, 192, 229, 0.5);
-    --font-color-bold: rgba(200, 192, 229, 1);
+    --font-color: rgba(212, 204, 241, 0.7);
+    --font-color-bold: rgb(211, 207, 229);
 }
 
 html,
@@ -80,7 +80,10 @@ body {
 
 .by {
     color: var(--font-color-bold);
+}
 
+.cal-icon {
+    color: var(--font-color);
 }
 
 .edit {
@@ -88,6 +91,7 @@ body {
     top: 0.5rem;
     right: 0.5rem;
     cursor: pointer;
+    padding-top: 0.35rem;
 }
 
 .fas {
