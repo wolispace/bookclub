@@ -51,7 +51,10 @@ async function saveForm() {
   if (newClub) {
     clubId = 'NEWCLUB';
   }
-
+  // show overlay with a loading spinner or something
+  const overlay = document.querySelector('.overlay');
+  overlay.style.zIndex = 2;
+  
   // send this data to the server to sort out what to save
   fetch(`?c=${clubId}&d=${JSON.stringify(newData)}`).then(res => {
     if(res.ok) {

@@ -134,9 +134,24 @@ body {
     display: none;
     position: fixed;
     inset: 0;
+    align-items: center;
+    justify-content: center;
+
     background: rgba(0,0,0,0.5);
 }
-.overlay.visible { display: block; }
+
+.overlay.visible { display: flex; }
+
+.spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 
 .dialogbuttons {
     display: flex;

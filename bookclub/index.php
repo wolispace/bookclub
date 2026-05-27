@@ -160,7 +160,7 @@ function outputPage($v) {
     <body>
     <h1 class='clubtitle'>Bookclub</h1>
     <div class='schedule'>{$clubList}</div>
-    <div class='overlay'></div>
+    <div class='overlay'><div class='spinner'></div></div>
     <div class='dialog'></div>
     </body>
     </html>";
